@@ -31,7 +31,7 @@ function DisableDamageItem.OnUpdate()
         if DisableDamageItem.TrigerActivation and DisableDamageItem.timer < GameRules.GetGameTime() and DisableDamageItem.triger == 0 then
             for i = 0, 2 do
                 local item = NPC.GetItemByIndex(Heroes.GetLocal(), i)
-                if item and Abilities.Contains(item) and Ability.IsItem(item) then
+                if item and Abilities.Contains(item) and Ability.IsItem(item) and DisableDamageItem.CheckItem(item) then
                     DisableDamageItem.ItemStashAbuse(item, 6 + i)
                 end
             end
@@ -41,7 +41,7 @@ function DisableDamageItem.OnUpdate()
         if DisableDamageItem.triger == 1 and DisableDamageItem.timer < GameRules.GetGameTime() then
             for i = 6, 9 do
                 local item = NPC.GetItemByIndex(Heroes.GetLocal(), i)
-                if item and Abilities.Contains(item) and Ability.IsItem(item) then
+                if item and Abilities.Contains(item) and Ability.IsItem(item) and DisableDamageItem.CheckItem(item) then
                     DisableDamageItem.ItemStashAbuse(item, (-6 + i))
                 end
             end
@@ -51,7 +51,7 @@ function DisableDamageItem.OnUpdate()
         if DisableDamageItem.triger == 2 and DisableDamageItem.timer < GameRules.GetGameTime() then
             for i = 3, 6 do
                 local item = NPC.GetItemByIndex(Heroes.GetLocal(), i)
-                if item and Abilities.Contains(item) and Ability.IsItem(item) then
+                if item and Abilities.Contains(item) and Ability.IsItem(item) and DisableDamageItem.CheckItem(item) then
                     DisableDamageItem.ItemStashAbuse(item, 6 + (-3 + i))
                 end
             end
@@ -61,7 +61,7 @@ function DisableDamageItem.OnUpdate()
         if DisableDamageItem.triger == 3 and DisableDamageItem.timer < GameRules.GetGameTime() then
             for i = 6, 9 do
                 local item = NPC.GetItemByIndex(Heroes.GetLocal(), i)
-                if item and Abilities.Contains(item) and Ability.IsItem(item) then
+                if item and Abilities.Contains(item) and Ability.IsItem(item) and DisableDamageItem.CheckItem(item) then
                     DisableDamageItem.ItemStashAbuse(item, 3 + (-6 + i))
                 end
             end
@@ -69,6 +69,17 @@ function DisableDamageItem.OnUpdate()
             DisableDamageItem.timer = GameRules.GetGameTime() + 0.2 + NetChannel.GetAvgLatency(Enum.Flow.MAX_FLOWS)
         end
     end
+end
+
+function DisableDamageItem.CheckItem(item)
+    if item then
+        for _,name in pairs(DisableDamageItem.ItemsForSwap) do
+            if Ability.GetName(item) == name then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 function DisableDamageItem.ItemStashAbuse(item,slot)
@@ -79,14 +90,47 @@ function DisableDamageItem.init()
     DisableDamageItem.TrigerActivation = false
     DisableDamageItem.triger = 0 
     DisableDamageItem.timer = 0
+    DisableDamageItem.ItemsForSwap = 
+    {
+         "item_butterfly"
+        ,"item_greater_crit"
+        ,"item_monkey_king_bar"
+        ,"item_radiance"
+        ,"item_basher"
+        ,"item_bfury"
+        ,"item_lesser_crit"
+        ,"item_faerie_fire"
+        ,"item_branches"
+        ,"item_blade_of_alacrity"
+        ,"item_boots_of_elves"
+        ,"item_blight_stone"
+        ,"item_blades_of_attack"
+        ,"item_quarterstaff"
+        ,"item_broadsword"
+        ,"item_claymore"
+        ,"item_javelin"
+        ,"item_mithril_hammer"
+        ,"item_gloves"
+        ,"item_wraith_band"
+        ,"item_phase_boots"
+        ,"item_power_treads"
+        ,"item_oblivion_staff"
+        ,"item_moon_shard"
+        ,"item_ring_of_basilius"
+        ,"item_ring_of_aquila"
+        ,"item_vladmir"
+        ,"item_nullifier"
+        ,"item_bloodthorn"
+        ,"item_ethereal_blade"
+    }
 end
 
 function DisableDamageItem.OnGameStart()
-DisableDamageItem.init()
+    DisableDamageItem.init()
 end
 
 function DisableDamageItem.OnGameEnd()
-DisableDamageItem.init()        
+    DisableDamageItem.init()
 end
 DisableDamageItem.init()
 
